@@ -1,0 +1,6 @@
+config:
+  apache: /var/log/apache2/*access.log
+  report: report
+security:
+  user: user
+  pass: pass
