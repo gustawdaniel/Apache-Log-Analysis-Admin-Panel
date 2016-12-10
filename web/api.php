@@ -1,70 +1,51 @@
 <?php
+// error_reporting(E_ALL);
+// ini_set("display_errors", 1);
+
+require_once __DIR__."/../vendor/autoload.php";
+use Symfony\Component\Yaml\Yaml;
+
+$config = Yaml::parse(file_get_contents(__DIR__.'/../config/parameters.yml'));
 
 session_start();
 
 //$method = $_SERVER['REQUEST_METHOD'];
 $uri = explode('/', strtolower(substr($_SERVER['REQUEST_URI'], 1)));
 $route = $uri[1];
-//die($route);
 //$parameter = $uri[1] ? $uri[1] : "";
-//$input =  json_decode(file_get_contents('php://input'),true);
-//$post =  $_POST;
-//$word = $input["word"] ? $input["word"] : $_POST["word"];
+
 $data = array();
-//$data["config"] = [
-//    "uri" => implode("/",$uri),
-//    "route" => $route,
-//    "parameter" => $parameter,
-//    "method" => $method,
-//    "input" => $input,
-//    "post" => $post,
-//    "word" => $word
-//];
-//
+
     switch ($route) {
         case "login": {
+
+            if(!isset($_POST["user"]) || !isset($_POST["pass"])) {
+                $data["error"] = ["code" => 400, "type" => "Bad Request", "message" => 'Invalid form'];
+                echo json_encode($data);
+                die();
+            } elseif($_POST["user"]!=$config["security"]["user"] || $_POST["pass"]!=$config["security"]["pass"]) {
+                $data["error"] = ["code" => 403, "type" => "Forbidden", "message" => 'Incorrect Login or Password'];
+                echo json_encode($data);
+                die();
+            }
+
+            $_SESSION['user'] = $config["security"]["user"];
             $data = ["state" => "loggedIn"];
 
-
-//            switch ($parameter) {
-//                case "": {
-//                    switch ($method) {
-//                        case 'GET': {
-//
-//                            break;
-//                        } case 'POST': {
-//
-//                        break;
-//                    } default: {
-//                        $data["error"] = ["code" => 405, "type" => "Method Not Allowed", "message" => "Method not allowed, try GET /word"];
-//                        break;
-//                    }
-//                    }
-//                    break;
-//                }
-//                default: {
-//                    switch ($method) {
-//                        case 'GET': {
-//
-//                            break;
-//                        } case 'DELETE': {
-//
-//                        break;
-//                    } default: {
-//                        $data["error"] = ["code" => 405, "type" => "Method Not Allowed", "message" => "Method not allowed, try GET /word"];
-//                        break;
-//                    }
-//                    }
-//                    break;
-//                }
-//            }
-            break;
         }
         case "report": {
+
+            if(!$_SESSION['user']){
+                $data["error"] = ["code" => 403, "type" => "Forbidden", "message" => 'Incorrect Login or Password'];
+                echo json_encode($data);
+                die();
+            }
+
+            $data["report"] = [["name"=>"a"],["name"=>"b"],["name"=>"c"]];
+
             break;
         }
         case "logout": {
-//            setcookie('session',md5(rand()),time()+60*60*24*30,'/');
             session_unset();
             session_destroy();
             $data = ["state" => "loggedOut"];
@@ -82,6 +63,8 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: GET, POST, DELETE");
 header('Content-Type: application/json');
 
+
+//$data = $config;
 echo json_encode($data);
 
 
@@ -91,8 +74,7 @@ echo json_encode($data);
 
 //ob_start();
 
-//// error_reporting(E_ALL);
-//// ini_set("display_errors", 1);
+
 //    $msg = '';
 //
 //    if (isset($_POST['login']) && !empty($_POST['username'])

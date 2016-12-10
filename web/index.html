@@ -35,83 +35,58 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="row">
-        <div class="offset-lg-3 col-lg-6 col-md-12 col-sm-12 col-xs-12">
-            <div class="card card-block text-xs-center">
-                <h4 class="card-title">Apache Log Analysis</h4>
-                <div class="card-block">
-                    <form id="login-form">
-                        <div class="form-group">
-                            <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
-                        </div>
-                    </form>
-                    <div id="login-error"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<button id="logout" class="btn btn-danger">Logout</button>
+
 
 
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/tether/dist/js/tether.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="bower_components/mustache.js/mustache.min.js"></script>
 
-
+<script src="js/site.js"></script>
 
 <script>
-    function getFormData($form){
-        var unindexed_array = $form.serializeArray();
-        var indexed_array = {};
-
-        $.map(unindexed_array, function(n, i){
-            indexed_array[n['name']] = n['value'];
-        });
-
-        return indexed_array;
-    }
+    var url = "http://localhost:8000/api.php/";
 
 
+    $.get(url+"report").done(function(data){
+        console.log(data);
+        if(data.hasOwnProperty('report'))
+        {
+            $.get("template/report.html").done(function(template){
+                console.log(data);
 
-    function deleteAllCookies() {
-        var cookies = document.cookie.split(";");
-
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i];
-            var eqPos = cookie.indexOf("=");
-            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                var html = Mustache.render(template, data);
+                $("body").html(html);
+            });
+        } else {
+            $.get("template/login.html").done(function(template){
+                var data = {
+                    title: "Constructing HTML Elements"
+                };
+                var html = Mustache.render(template, data);
+                $("body").html(html);
+            });
         }
-    }
+    });
 
 
 </script>
 
 
-<script>
-    var logout = document.getElementById("logout");
 
-    logout.addEventListener("click", function(){
-        deleteAllCookies();
-        $.get(url+"logout");
-    })
-</script>
 
 
 <script>
     var form = document.getElementById("login-form");
     var error = document.getElementById("login-error");
+    var logout = document.getElementById("logout");
 
-    var url = "http://localhost:8000/api.php/";
+    logout.addEventListener("click", function(){
+        deleteAllCookies();
+        $.get(url+"logout");
+    });
 
     form.addEventListener("submit",function(e){
         e.preventDefault();
@@ -128,9 +103,7 @@
         return false;
 
     });
-
-
-
 </script>
+
 
 </body>
