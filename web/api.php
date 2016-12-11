@@ -42,8 +42,8 @@ function returnError($code,$type,$message){
             if(
                 (!isset($_SESSION['user'])
                     ||!$_SESSION['user'])
-                &&(!isset($_SERVER["HTTP_AUTHORIZATION"])
-                    ||$_SERVER["HTTP_AUTHORIZATION"]!=$config["security"]["authorization"]
+                &&(!isset(getallheaders()["Authorization"])
+                    ||getallheaders()["Authorization"]!=$config["security"]["authorization"]
                 )
             ){
                 returnError(403,"Forbidden","Incorrect Login or Password");
