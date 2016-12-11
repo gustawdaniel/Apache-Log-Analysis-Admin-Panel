@@ -1,0 +1,22 @@
+<div class="container report-container">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card card-block text-xs-center">
+                <h4 class="card-title">Apache Log Analysis</h4>
+                <div class="card-block">
+                    <ul class="list-group row">
+                        {{#report}}
+                        <div class="col-sm-6 col-md-4 col-lg-3 padding-b-10">
+                        <a target="_blank" href="{{link}}" class="list-group-item ">{{name}}</a>
+                        </div>
+                        {{/report}}
+                    </ul>
+                </div>
+                <div class="card-block">
+                    <button id="logout" class="btn btn-danger btn-block">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
