@@ -68,7 +68,6 @@ function returnError($code,$type,$message){
                 }
                 die();
             }
-
             break;
         }
         case "logout": {

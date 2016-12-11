@@ -194,3 +194,6 @@ switch ($route) {
 ```
 
 Nasz switch przyjmuje do porównań ścieżkę wpisaną po `api.php` w adresie. Ponieważ do logowania używamy `$_POST`, kontroler na tej ścieżce sprawdza czy wysłano zmienne `user` i `pass`, oraz czy są zgodne z tymi ustawionymi w konfiguracji. Zauważ, że na końcu nie dodałem instrukcji `break;`. Zrobiłem to celowo. Od razu po zalogowaniu bez wysyłania kolejnego requestu zawsze chcę dostawać listę domen, dla których Apache tworzy logi. Dlatego pod blokiem `login` umieściłem blok `report`, który ma wykonać się zarówno po wybraniu ścieżki `report` jak i po poprawnym zalogowaniu użytkownika. 
+
+
+sudo mmv "*log.1" "#1log"
