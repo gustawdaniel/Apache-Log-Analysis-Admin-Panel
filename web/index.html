@@ -35,7 +35,7 @@
 </head>
 <body>
 
-
+<div id="content"></div>
 
 
 
@@ -52,22 +52,10 @@
 
     $.get(url+"report").done(function(data){
         console.log(data);
-        if(data.hasOwnProperty('report'))
-        {
-            $.get("template/report.html").done(function(template){
-                console.log(data);
-
-                var html = Mustache.render(template, data);
-                $("body").html(html);
-            });
+        if(data.hasOwnProperty('report')){
+            loadComponent("report",data);
         } else {
-            $.get("template/login.html").done(function(template){
-                var data = {
-                    title: "Constructing HTML Elements"
-                };
-                var html = Mustache.render(template, data);
-                $("body").html(html);
-            });
+            loadComponent("login",{});
         }
     });
 
@@ -77,33 +65,6 @@
 
 
 
-
-<script>
-    var form = document.getElementById("login-form");
-    var error = document.getElementById("login-error");
-    var logout = document.getElementById("logout");
-
-    logout.addEventListener("click", function(){
-        deleteAllCookies();
-        $.get(url+"logout");
-    });
-
-    form.addEventListener("submit",function(e){
-        e.preventDefault();
-        console.log(JSON.stringify(getFormData($(this))));
-        $.post(url+'login',getFormData($(this))).done(function(data){
-            console.log(data);
-            if(data.hasOwnProperty('error')){
-                error.innerHTML='<div class="alert alert-danger">'+data.error.message+'</div>';
-            }
-        }).fail(function(data) {
-            error.innerHTML='<div class="alert alert-danger">'+'There are unidentified problems with service.'+'</div>';
-            console.log(data);
-        });
-        return false;
-
-    });
-</script>
 
 
 </body>

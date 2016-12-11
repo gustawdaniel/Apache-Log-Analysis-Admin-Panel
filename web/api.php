@@ -16,6 +16,12 @@ $route = $uri[1];
 
 $data = array();
 
+
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, DELETE");
+header('Content-Type: application/json');
+
     switch ($route) {
         case "login": {
 
@@ -58,10 +64,7 @@ $data = array();
     }
 
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, DELETE");
-header('Content-Type: application/json');
+
 
 
 //$data = $config;
