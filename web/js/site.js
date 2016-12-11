@@ -24,6 +24,6 @@ function loadComponent(name,data){
     $.get("component/"+name+"/"+name+".html").done(function(template){
         var html = Mustache.render(template, data);
         $("#content").html(html);
+        $.getScript("component/"+name+"/"+name+".js")
     });
-    $.getScript("component/"+name+"/"+name+".js")
 }

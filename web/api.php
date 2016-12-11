@@ -9,10 +9,9 @@ $config = Yaml::parse(file_get_contents(__DIR__.'/../config/parameters.yml'));
 
 session_start();
 
-//$method = $_SERVER['REQUEST_METHOD'];
 $uri = explode('/', strtolower(substr($_SERVER['REQUEST_URI'], 1)));
 $route = $uri[1];
-//$parameter = $uri[1] ? $uri[1] : "";
+$parameter = isset($uri[2]) ? $uri[2] : "";
 
 $data = array();
 
@@ -41,13 +40,45 @@ header('Content-Type: application/json');
         }
         case "report": {
 
-            if(!$_SESSION['user']){
+//            echo var_dump($_SERVER);
+//            die($_SERVER["HTTP_AUTHORIZATION"]);
+
+            if(
+                (!isset($_SESSION['user'])
+                    ||!$_SESSION['user'])
+                &&(!isset($_SERVER["HTTP_AUTHORIZATION"])
+                    ||$_SERVER["HTTP_AUTHORIZATION"]!=$config["security"]["authorization"]
+                )
+            ){
                 $data["error"] = ["code" => 403, "type" => "Forbidden", "message" => 'Incorrect Login or Password'];
                 echo json_encode($data);
                 die();
             }
+//            elseif($_SESSION['user'] || ) {
+                $data["report"] = [];
 
-            $data["report"] = [["name"=>"a"],["name"=>"b"],["name"=>"c"]];
+                $list = json_decode(file_get_contents(__DIR__ . "/../" . $config["config"]["report"] . "/list.json"));
+
+                foreach ($list->list as $key => $value) {
+                    $data["report"][] = ["name" => $value, "key" => $key, "link" => "api.php/report/" . $value];
+                };
+
+                if ($parameter != "") {
+//                var_dump($_SERVER["HTTP_ACCEPT"]);
+//                die($_SERVER["HTTP_ACCEPT"]);
+                    if (preg_match('/text\/html/', $_SERVER["HTTP_ACCEPT"])) {
+                        header('Content-Type: text/html');
+                        echo file_get_contents(__DIR__ . "/../" . $config["config"]["report"] . "/html/" . $parameter . ".html");
+                    } elseif (preg_match('/application\/json|\*\/\*/', $_SERVER["HTTP_ACCEPT"])) {
+                        header('Content-Type: application/json');
+                        echo file_get_contents(__DIR__ . "/../" . $config["config"]["report"] . "/json/" . $parameter . ".json");
+                    } else {
+                        $data["error"] = ["code" => 415, "type" => "Unsupported Media Type", "message" => 'Incorrect Content Type'];
+                        echo json_encode($data);
+                        die();
+                    }
+                }
+//            }
 
             break;
         }
@@ -58,40 +89,10 @@ header('Content-Type: application/json');
             break;
         }
         default: {
-            $data["error"] = ["code" => 404, "type" => "Not Found", "message" => 'Route not found'];
+            $data["error"] = ["code" => 404, "type" => "Not Found", "message" => 'Use route /report with Authorization header'];
             break;
         }
     }
 
 
-
-
-
-//$data = $config;
 echo json_encode($data);
-
-
-
-
-
-
-//ob_start();
-
-
-//    $msg = '';
-//
-//    if (isset($_POST['login']) && !empty($_POST['username'])
-//        && !empty($_POST['password'])) {
-//
-//        if ($_POST['username'] == 'tutorialspoint' &&
-//            $_POST['password'] == '1234') {
-//            $_SESSION['valid'] = true;
-//            $_SESSION['timeout'] = time();
-//            $_SESSION['username'] = 'tutorialspoint';
-//
-//            echo 'You have entered valid use name and password';
-//        }else {
-//            $msg = 'Wrong username or password';
-//        }
-//    }
-//

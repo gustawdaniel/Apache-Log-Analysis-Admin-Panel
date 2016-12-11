@@ -4,3 +4,4 @@ config:
 security:
   user: user
   pass: pass
+  authorization: api

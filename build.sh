@@ -7,11 +7,27 @@
 eval $(parse_yaml config/parameters.yml "parameters_")
 
 mkdir -p $parameters_config_report
+mkdir -p $parameters_config_report/html
+mkdir -p $parameters_config_report/json
+
+
+arr=();
 
 # loop over apache logs
 for file in $parameters_config_apache
 do
   out=$(basename "$file" .log)
   out=${out%_access}
-  goaccess -f $file -a -o $parameters_config_report/$out.html;
+
+  if [ ! -s $file ];
+  then
+    continue;
+  fi
+
+  goaccess -f $file -a -o $parameters_config_report/html/$out.html;
+  goaccess -f $file -a -o $parameters_config_report/json/$out.json;
+
+  arr+=($out);
 done
+
+jq -n --arg inarr "${arr[*]}" '{ list: $inarr | split(" ") }' > $parameters_config_report/list.json

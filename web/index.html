@@ -11,8 +11,11 @@
         body {
             font-family: 'Lato', sans-serif;
         }
-        .container {
+        .login-container {
             padding-top: 25vh;
+        }
+        .report-container {
+            padding-top: 15vh;
         }
         .btn-login {
             background-color: #59B2E0;
@@ -47,21 +50,9 @@
 <script src="js/site.js"></script>
 
 <script>
-    var url = "http://localhost:8000/api.php/";
-
-
-    $.get(url+"report").done(function(data){
-        console.log(data);
-        if(data.hasOwnProperty('report')){
-            loadComponent("report",data);
-        } else {
-            loadComponent("login",{});
-        }
-    });
-
-
+    var url = "/api.php/";
 </script>
-
+<script src="js/routing.js"></script>
 
 
 
