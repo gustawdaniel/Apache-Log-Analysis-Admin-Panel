@@ -7,7 +7,7 @@
         e.preventDefault();
         //console.log(JSON.stringify(getFormData($(this))));
         $.post(url + 'login', getFormData($(this))).done(function (data) {
-            //console.log(data);
+            //console.log("s",data);
             if (data.hasOwnProperty('error')) {
                 //console.log("error_detected");
                 error.innerHTML = '<div class="alert alert-danger">' + data.error.message + '</div>';

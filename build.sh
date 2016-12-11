@@ -6,10 +6,7 @@
 # read yaml file
 eval $(parse_yaml config/parameters.yml "parameters_")
 
-mkdir -p $parameters_config_report
-mkdir -p $parameters_config_report/html
-mkdir -p $parameters_config_report/json
-
+mkdir -p $parameters_config_report $parameters_config_report/html $parameters_config_report/json
 
 arr=();
 
@@ -24,6 +21,7 @@ do
     continue;
   fi
 
+  echo "Processed: "$out;
   goaccess -f $file -a -o $parameters_config_report/html/$out.html;
   goaccess -f $file -a -o $parameters_config_report/json/$out.json;
 
